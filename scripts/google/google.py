@@ -27,10 +27,10 @@ def parseTable(table: bs4.element.Tag) -> List[dict]:
     '''
     ret = []
     ret: List[dict]
-    col2op = {"Version": lambda x: ret[-1].update({"Version": x.text}),
+    col2op = {"Version": lambda x: ret[-1].update({"Version": x.text.strip()}),
               "Flash": lambda x: None,
-              "Download": lambda x: ret[-1].update({"Download": x.a["href"]}),
-              "SHA-256 Checksum": lambda x: ret[-1].update({"SHA-256 Checksum": x.text})}
+              "Download": lambda x: ret[-1].update({"Download": x.a["href"].strip()}),
+              "SHA-256 Checksum": lambda x: ret[-1].update({"SHA-256 Checksum": x.text.strip()})}
 
     ths = tuple(map(lambda th: th.text, table.thead.find_all('th')))
     trs = table.find_all("tr")
@@ -69,7 +69,7 @@ def parseLinks(response: requests.Response):
         assert table.name == 'table'
 
         parsedTable = parseTable(table)
-        jsonTables[h2.text] = parsedTable
+        jsonTables[h2.text.strip()] = parsedTable
 
     with open(os.path.join(JSONPath, 'index.json'), 'w') as f:
         json.dump(jsonTables, f, indent=2)

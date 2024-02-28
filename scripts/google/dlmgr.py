@@ -8,7 +8,7 @@ from typing import Dict, List
 cwd guaranteed to be the crawler directory
 '''
 CWD = os.getcwd()
-ARIA_CMD = "aria2c -i {} -j 8"
+ARIA_CMD = "aria2c -i {} -j 8 -s"
 
 
 def pickUpDlLink(dlList: List[Dict[str, str]]) -> List[Dict]:
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     JSONPath = os.path.join(CWD, 'json', 'google')
     downloadPath = os.path.join(CWD, 'download', 'google')
     logging.basicConfig(level=logging.INFO,
-                        filename=os.path.join('log', 'google.log'),
+                        filename=os.path.join('log/google', 'google.log'),
                         encoding='utf-8',
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
