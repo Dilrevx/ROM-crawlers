@@ -1,14 +1,16 @@
 import logging
 import os
 import json
+import random
 import subprocess
+import time
 from typing import Dict, List
 
 '''
 cwd guaranteed to be the crawler directory
 '''
 CWD = os.getcwd()
-ARIA_CMD = "aria2c -i {} -j 8 -s"
+ARIA_CMD = "aria2c -i {} -x 8 --auto-file-renaming false"
 
 
 def pickUpDlLink(dlList: List[Dict[str, str]]) -> List[Dict]:
@@ -60,9 +62,15 @@ if __name__ == "__main__":
 
         cmd = ARIA_CMD.format(os.path.join(dlPath, 'links'))
         logging.info("executing: " + cmd)
-        subprocess.run(cmd, shell=True, cwd=dlPath)
+
+        try:
+            subprocess.run(cmd, shell=True, cwd=dlPath, check=True)
+        except Exception as e:
+            logging.warning("aria2c failed: " + str(e))
+
 
     with open(os.path.join(JSONPath, 'index.json'), 'r') as f:
         data = json.load(f)
         for nameStr, dlList in data.items():
             download(nameStr, dlList)
+            time.sleep(5 + random.random() * 12)
